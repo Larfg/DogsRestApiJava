@@ -1,5 +1,6 @@
 package org.adaschool.retrofit;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -22,8 +23,15 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
+    private static Context context;
+
+    public static Context getAppContext() {
+        return context;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        context = getApplicationContext();
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

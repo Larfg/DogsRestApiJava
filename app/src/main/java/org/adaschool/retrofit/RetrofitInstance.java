@@ -1,5 +1,8 @@
 package org.adaschool.retrofit;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -14,16 +17,23 @@ public class RetrofitInstance {
         if (retrofit == null) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            JWTInterceptor jwtInterceptor = new JWTInterceptor(new SharedPreferencesStorage());
             OkHttpClient okHttpClient = new OkHttpClient.Builder()
                     .addInterceptor(loggingInterceptor)
+                    .addInterceptor(jwtInterceptor)
                     .writeTimeout(0, TimeUnit.MILLISECONDS)
                     .readTimeout(2, TimeUnit.MINUTES)
                     .connectTimeout(1, TimeUnit.MINUTES).build();
 
+            Gson gson = new GsonBuilder()
+                    .setDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
+                    .create();
+
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .client(okHttpClient)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .build();
         }
         return retrofit;
